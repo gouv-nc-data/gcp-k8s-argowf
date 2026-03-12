@@ -2,13 +2,18 @@
 module "sa" {
   source = "git::https://github.com/gouv-nc-data/gcp-k8s-iam.git//?ref=main"
 
-  name               = var.name
-  namespace          = var.namespace
-  project_id         = var.project_id
-  gcp_roles          = var.gcp_roles
-  secrets            = var.secrets
-  k8s_custom_roles   = var.k8s_custom_roles
-  k8s_external_roles = var.k8s_external_roles
+  name             = var.name
+  namespace        = var.namespace
+  project_id       = var.project_id
+  gcp_roles        = var.gcp_roles
+  secrets          = var.secrets
+  k8s_custom_roles = var.k8s_custom_roles
+  k8s_external_roles = concat([
+    {
+      kind = "ClusterRole"
+      name = "argo-task-results"
+    }
+  ], var.k8s_external_roles)
 }
 
 # Définition du WorkflowTemplate Argo
