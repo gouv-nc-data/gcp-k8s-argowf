@@ -44,4 +44,46 @@ module "sydonia_pipeline" {
 ```
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+No requirements.
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_sa"></a> [sa](#module\_sa) | git::https://github.com/gouv-nc-data/gcp-k8s-iam.git// | main |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [kubernetes_manifest.workflow_template](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_gcp_roles"></a> [gcp\_roles](#input\_gcp\_roles) | List of GCP IAM roles to assign to the Service Account | `list(string)` | `[]` | no |
+| <a name="input_k8s_custom_roles"></a> [k8s\_custom\_roles](#input\_k8s\_custom\_roles) | Custom Kubernetes roles to create and bind | <pre>list(object({<br/>    name = string<br/>    rules = list(object({<br/>      api_groups = list(string)<br/>      resources  = list(string)<br/>      verbs      = list(string)<br/>    }))<br/>  }))</pre> | `[]` | no |
+| <a name="input_k8s_external_roles"></a> [k8s\_external\_roles](#input\_k8s\_external\_roles) | Existing Kubernetes roles (Role or ClusterRole) to bind | <pre>list(object({<br/>    kind = string<br/>    name = string<br/>  }))</pre> | `[]` | no |
+| <a name="input_name"></a> [name](#input\_name) | Name used for the Service Account and WorkflowTemplate | `string` | n/a | yes |
+| <a name="input_namespace"></a> [namespace](#input\_namespace) | The Kubernetes namespace where the resources will be created | `string` | n/a | yes |
+| <a name="input_project_id"></a> [project\_id](#input\_project\_id) | The GCP project ID where the resources will be created | `string` | n/a | yes |
+| <a name="input_secrets"></a> [secrets](#input\_secrets) | Map of secret names to grant access to | `map(string)` | `{}` | no |
+| <a name="input_workflow_spec"></a> [workflow\_spec](#input\_workflow\_spec) | The spec part of the Argo WorkflowTemplate | `any` | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_gcp_service_account_email"></a> [gcp\_service\_account\_email](#output\_gcp\_service\_account\_email) | Email of the created GCP Service Account |
+| <a name="output_k8s_service_account_name"></a> [k8s\_service\_account\_name](#output\_k8s\_service\_account\_name) | Name of the created Kubernetes Service Account |
+| <a name="output_workflow_name"></a> [workflow\_name](#output\_workflow\_name) | Name of the created Argo WorkflowTemplate |
 <!-- END_TF_DOCS -->
