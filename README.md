@@ -64,12 +64,14 @@ No requirements.
 
 | Name | Type |
 |------|------|
+| [kubernetes_manifest.cron_workflow](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 | [kubernetes_manifest.workflow_template](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_cron_schedule"></a> [cron\_schedule](#input\_cron\_schedule) | Cron schedule for the workflow (e.g. '0 1 * * *'). If null, no CronWorkflow is created. | `string` | `null` | no |
 | <a name="input_gcp_roles"></a> [gcp\_roles](#input\_gcp\_roles) | List of GCP IAM roles to assign to the Service Account | `list(string)` | `[]` | no |
 | <a name="input_k8s_custom_roles"></a> [k8s\_custom\_roles](#input\_k8s\_custom\_roles) | Custom Kubernetes roles to create and bind | <pre>list(object({<br/>    name = string<br/>    rules = list(object({<br/>      api_groups = list(string)<br/>      resources  = list(string)<br/>      verbs      = list(string)<br/>    }))<br/>  }))</pre> | `[]` | no |
 | <a name="input_k8s_external_roles"></a> [k8s\_external\_roles](#input\_k8s\_external\_roles) | Existing Kubernetes roles (Role or ClusterRole) to bind | <pre>list(object({<br/>    kind = string<br/>    name = string<br/>  }))</pre> | `[]` | no |
