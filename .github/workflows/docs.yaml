@@ -1,0 +1,20 @@
+name: "Terraform Docs"
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**/*.tf'
+  pull_request:
+    paths:
+      - '**/*.tf'
+
+permissions:
+  contents: write
+
+jobs:
+  terraform:
+    uses: gouv-nc-data/github-workflows/.github/workflows/terraform-docs.yml@main
+    secrets: inherit
+
+
