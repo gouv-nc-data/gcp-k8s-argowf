@@ -38,6 +38,15 @@ variable "k8s_custom_roles" {
   default = []
 }
 
+variable "k8s_external_roles" {
+  description = "Existing Kubernetes roles (Role or ClusterRole) to bind"
+  type = list(object({
+    kind = string
+    name = string
+  }))
+  default = []
+}
+
 variable "workflow_spec" {
   description = "The spec part of the Argo WorkflowTemplate"
   type        = any
