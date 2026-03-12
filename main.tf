@@ -30,3 +30,25 @@ resource "kubernetes_manifest" "workflow_template" {
     })
   }
 }
+
+# Déclencheur Cron (optionnel)
+resource "kubernetes_manifest" "cron_workflow" {
+  count = var.cron_schedule != null ? 1 : 0
+
+  manifest = {
+    apiVersion = "argoproj.io/v1alpha1"
+    kind       = "CronWorkflow"
+    metadata = {
+      name      = var.name
+      namespace = var.namespace
+    }
+    spec = {
+      schedule = var.cron_schedule
+      workflowSpec = {
+        workflowTemplateRef = {
+          name = kubernetes_manifest.workflow_template.manifest.metadata.name
+        }
+      }
+    }
+  }
+}

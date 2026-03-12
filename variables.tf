@@ -51,3 +51,9 @@ variable "workflow_spec" {
   description = "The spec part of the Argo WorkflowTemplate"
   type        = any
 }
+
+variable "cron_schedule" {
+  description = "Cron schedule for the workflow (e.g. '0 1 * * *'). If null, no CronWorkflow is created."
+  type        = string
+  default     = null
+}
