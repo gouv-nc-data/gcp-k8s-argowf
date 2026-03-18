@@ -6,10 +6,14 @@ locals {
     var.env_vars
   )
 
+  # Nom du bucket (doit être unique globalement)
+  staging_bucket_name = "dlt-staging-${var.name}-${var.project_id}"
+
   # Génération des variables au format Argo
   automatic_env = concat(
     [for k, v in local.all_env_vars : { name = k, value = v }],
-    [for k, v in var.secrets : { name = k, value = "projects/${var.secret_project_id}/secrets/${v}/versions/latest" }]
+    [for k, v in var.secrets : { name = k, value = "projects/${var.secret_project_id}/secrets/${v}/versions/latest" }],
+    var.create_staging_bucket ? [{ name = "BUCKET_URL", value = "gs://${local.staging_bucket_name}" }] : []
   )
 
   # Reconstruction du workflow_spec avec injection dans les templates de type 'container'
@@ -84,3 +88,24 @@ resource "kubernetes_manifest" "cron_workflow" {
     }
   }
 }
+
+# Ressources pour le staging GCS (optionnel)
+resource "google_storage_bucket" "staging" {
+  count    = var.create_staging_bucket ? 1 : 0
+  project  = var.project_id
+  name     = local.staging_bucket_name
+  location = var.staging_bucket_location
+
+  force_destroy               = true
+  uniform_bucket_level_access = true
+
+  public_access_prevention = "enforced"
+}
+
+resource "google_storage_bucket_iam_member" "staging_access" {
+  count  = var.create_staging_bucket ? 1 : 0
+  bucket = google_storage_bucket.staging[0].name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${module.sa.gcp_service_account_email}"
+}
+

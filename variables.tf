@@ -69,3 +69,16 @@ variable "env_vars" {
   type        = map(string)
   default     = {}
 }
+
+variable "create_staging_bucket" {
+  description = "Créer un bucket GCS pour le staging (DLT)"
+  type        = bool
+  default     = false
+}
+
+variable "staging_bucket_location" {
+  description = "Localisation du bucket de staging"
+  type        = string
+  default     = "EU"
+}
+
