@@ -52,6 +52,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
+| <a name="provider_google"></a> [google](#provider\_google) | n/a |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 
 ## Modules
@@ -64,6 +65,8 @@ No requirements.
 
 | Name | Type |
 |------|------|
+| [google_storage_bucket.staging](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) | resource |
+| [google_storage_bucket_iam_member.staging_access](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_iam_member) | resource |
 | [kubernetes_manifest.cron_workflow](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 | [kubernetes_manifest.workflow_template](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 
@@ -71,6 +74,7 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_create_staging_bucket"></a> [create\_staging\_bucket](#input\_create\_staging\_bucket) | Créer un bucket GCS pour le staging (DLT) | `bool` | `false` | no |
 | <a name="input_cron_schedule"></a> [cron\_schedule](#input\_cron\_schedule) | Cron schedule for the workflow (e.g. '0 1 * * *'). If null, no CronWorkflow is created. | `string` | `null` | no |
 | <a name="input_env_vars"></a> [env\_vars](#input\_env\_vars) | Map of environment variables to inject in all container templates | `map(string)` | `{}` | no |
 | <a name="input_gcp_roles"></a> [gcp\_roles](#input\_gcp\_roles) | List of GCP IAM roles to assign to the Service Account | `list(string)` | `[]` | no |
@@ -81,6 +85,7 @@ No requirements.
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | The GCP project ID where the resources will be created | `string` | n/a | yes |
 | <a name="input_secret_project_id"></a> [secret\_project\_id](#input\_secret\_project\_id) | ID du projet contenant les secrets GCP | `string` | `"prj-dinum-p-secret-mgnt-aaf4"` | no |
 | <a name="input_secrets"></a> [secrets](#input\_secrets) | Map of secret names to grant access to | `map(string)` | `{}` | no |
+| <a name="input_staging_bucket_location"></a> [staging\_bucket\_location](#input\_staging\_bucket\_location) | Localisation du bucket de staging | `string` | `"EU"` | no |
 | <a name="input_workflow_spec"></a> [workflow\_spec](#input\_workflow\_spec) | The spec part of the Argo WorkflowTemplate | `any` | n/a | yes |
 
 ## Outputs
