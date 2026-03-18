@@ -57,3 +57,15 @@ variable "cron_schedule" {
   type        = string
   default     = null
 }
+
+variable "secret_project_id" {
+  description = "ID du projet contenant les secrets GCP"
+  type        = string
+  default     = "prj-dinum-p-secret-mgnt-aaf4"
+}
+
+variable "env_vars" {
+  description = "Map of environment variables to inject in all container templates"
+  type        = map(string)
+  default     = {}
+}

@@ -1,13 +1,44 @@
+locals {
+  # Fusion des variables d'environnement calculées
+  # On injecte GOOGLE_CLOUD_PROJECT par défaut s'il n'est pas dans var.env_vars
+  all_env_vars = merge(
+    { GOOGLE_CLOUD_PROJECT = var.project_id },
+    var.env_vars
+  )
+
+  # Génération des variables au format Argo
+  automatic_env = concat(
+    [for k, v in local.all_env_vars : { name = k, value = v }],
+    [for k, v in var.secrets : { name = k, value = "projects/${var.secret_project_id}/secrets/${v}/versions/latest" }]
+  )
+
+  # Reconstruction du workflow_spec avec injection dans les templates de type 'container'
+  patched_workflow_spec = merge(var.workflow_spec, {
+    templates = [
+      for t in lookup(var.workflow_spec, "templates", []) :
+      contains(keys(t), "container") ? merge(t, {
+        container = merge(t.container, {
+          env = concat(
+            lookup(t.container, "env", []),
+            local.automatic_env
+          )
+        })
+      }) : t
+    ]
+  })
+}
+
 # Module IAM pour la création du SA K8s/GCP
 module "sa" {
   source = "git::https://github.com/gouv-nc-data/gcp-k8s-iam.git//?ref=main"
 
-  name             = var.name
-  namespace        = var.namespace
-  project_id       = var.project_id
-  gcp_roles        = var.gcp_roles
-  secrets          = var.secrets
-  k8s_custom_roles = var.k8s_custom_roles
+  name              = var.name
+  namespace         = var.namespace
+  project_id        = var.project_id
+  gcp_roles         = var.gcp_roles
+  secrets           = var.secrets
+  secret_project_id = var.secret_project_id
+  k8s_custom_roles  = var.k8s_custom_roles
   k8s_external_roles = concat([
     {
       kind = "ClusterRole"
@@ -25,7 +56,7 @@ resource "kubernetes_manifest" "workflow_template" {
       name      = var.name
       namespace = var.namespace
     }
-    spec = merge(var.workflow_spec, {
+    spec = merge(local.patched_workflow_spec, {
       serviceAccountName = module.sa.k8s_service_account_name
     })
   }
