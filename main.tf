@@ -13,18 +13,18 @@ locals {
   )
 
   # Reconstruction du workflow_spec avec injection dans les templates de type 'container'
-  # On utilise jsondecode(jsonencode(...)) pour contourner le typage strict d'HCL sur les listes hétérogènes
+  # On utilise merge(t, ...) au lieu d'un ternaire t ? a : b pour éviter les erreurs de types sur les listes hétérogènes
   patched_workflow_spec = jsondecode(jsonencode(merge(var.workflow_spec, {
     templates = [
       for t in lookup(var.workflow_spec, "templates", []) :
-      can(t.container) ? merge(t, {
+      merge(t, can(t.container) ? {
         container = merge(t.container, {
           env = concat(
             try(t.container.env, []),
             local.automatic_env
           )
         })
-      }) : t
+      } : {})
     ]
   })))
 }
